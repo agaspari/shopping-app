@@ -18,7 +18,7 @@ public class ShoppingCart {
   private Map<Long, PurchaseItem> items = new HashMap<>();
 
   public void addItem(PurchaseItem newItem) {
-    newItem.id(new Long(items.size() + 1));
+    newItem.id(Long.valueOf(items.size() + 1));
     items.put(newItem.id(), newItem);
   }
 
