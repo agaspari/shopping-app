@@ -58,10 +58,31 @@ public class UITest {
     }
 
     @Test
-    @DisplayName("Verify basic ticket processing")
-    void testBasicTicket() throws InterruptedException {
+    @DisplayName("Verify basic checkout processing")
+    void testBasicCheckout() throws InterruptedException {
         customerName.sendKeys("Antonio");
         destinationState.sendKeys("AK");
+        shippingOption.selectByIndex(1);
+        nameOfProduct.sendKeys("Product A");
+        unitPrice.sendKeys("10");
+        quantity.sendKeys("1");
+        addItem.click();
+        Thread.sleep(1000);
+        softly.assertThat(result.getText()).as("result").isEqualTo("Cart contains 1 items");
+        currentTotal.click();
+        Thread.sleep(1000);
+        softly.assertThat(result.getText()).as("result").isEqualTo("Error: Request failed with status code 500");
+        checkOut.click();
+        Thread.sleep(1000);
+        softly.assertThat(result.getText()).as("result").isEqualTo("ok");
+        driver.quit();
+    }
+
+    @Test
+    @DisplayName("Verify error thrown on Destination Error")
+    void testDestinationErrorCheckout() throws InterruptedException {
+        customerName.sendKeys("Antonio");
+        destinationState.sendKeys("FAKE DESTINATION");
         shippingOption.selectByIndex(1);
         nameOfProduct.sendKeys("Product A");
         unitPrice.sendKeys("10");
@@ -74,9 +95,28 @@ public class UITest {
         softly.assertThat(result.getText()).as("result").isEqualTo("total: 20");
         checkOut.click();
         Thread.sleep(1000);
-        softly.assertThat(result.getText()).as("result").isEqualTo("ok");
+        softly.assertThat(result.getText()).as("result").isEqualTo("Error: Request failed with status code 500");
+        driver.quit();
+    }
 
-        //softly.assertThat(title).as("title").isEqualTo("Online Shopping");
+    @Test
+    @DisplayName("Verify error thrown on Shipping Option Error")
+    void testShippingOptionErrorCheckout() throws InterruptedException {
+        customerName.sendKeys("Antonio");
+        destinationState.sendKeys("AK");
+        shippingOption.selectByIndex(0);
+        nameOfProduct.sendKeys("Product A");
+        unitPrice.sendKeys("10");
+        quantity.sendKeys("1");
+        addItem.click();
+        Thread.sleep(1000);
+        softly.assertThat(result.getText()).as("result").isEqualTo("Cart contains 1 items");
+        currentTotal.click();
+        Thread.sleep(1000);
+        softly.assertThat(result.getText()).as("result").isEqualTo("total: 20");
+        checkOut.click();
+        Thread.sleep(1000);
+        softly.assertThat(result.getText()).as("result").isEqualTo("Error: Request failed with status code 500");
         driver.quit();
     }
 }

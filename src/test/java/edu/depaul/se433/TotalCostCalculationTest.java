@@ -36,7 +36,7 @@ public class TotalCostCalculationTest {
 
         Bill bill = TotalCostCalculator.calculate(cart, "IL", shipping);
 
-        assertEquals(31.8, bill.total());
+        assertEquals(31.2, bill.total());
     }
 
     @Test
@@ -50,7 +50,7 @@ public class TotalCostCalculationTest {
 
         Bill bill = TotalCostCalculator.calculate(cart, "IL", shipping);
 
-        assertEquals(90.1, bill.total());
+        assertEquals(88.6, bill.total());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class TotalCostCalculationTest {
 
         Bill bill = TotalCostCalculator.calculate(cart, "IL", shipping);
 
-        assertEquals(47.7, bill.total());
+        assertEquals(46.2, bill.total());
     }
 
     @Test
@@ -92,7 +92,7 @@ public class TotalCostCalculationTest {
 
         Bill bill = TotalCostCalculator.calculate(cart, "AK", shipping);
 
-        assertEquals(20, bill.total());
+        assertEquals(30, bill.total());
     }
 
     @Test
@@ -136,7 +136,7 @@ public class TotalCostCalculationTest {
 
         assertAll(
                 () -> assertThrows(Exception.class, () -> TotalCostCalculator.calculate(cart, null, shipping)),
-                () -> assertThrows(Exception.class, () -> TotalCostCalculator.calculate(cart, "ABC", shipping))
+                () -> assertThrows(IllegalArgumentException.class, () -> TotalCostCalculator.calculate(cart, "ABC", shipping))
         );
     }
 
@@ -149,7 +149,7 @@ public class TotalCostCalculationTest {
         ShippingType shipping = null;
         cart.addItem(item);
 
-        assertThrows(Exception.class, () -> TotalCostCalculator.calculate(cart, "IL", shipping));
+        assertThrows(Exception.class, () -> TotalCostCalculator.calculate(cart, "AK", shipping));
     }
 
     @Test
@@ -161,34 +161,34 @@ public class TotalCostCalculationTest {
         ShippingType shipping = ShippingType.STANDARD;
         cart.addItem(item);
 
-        assertThrows(Exception.class, () -> TotalCostCalculator.calculate(cart, "IL", shipping));
+        assertThrows(IllegalArgumentException.class, () -> TotalCostCalculator.calculate(cart, "AK", shipping));
     }
 
     //Boundary Tests
     @Test
     @DisplayName("Testing Below Free Shipping")
     void testFreeShippingBelow50() {
-        double cost = TotalCostCalculator.calculate(50.00, "IL", ShippingType.STANDARD);
+        double cost = TotalCostCalculator.calculate(50.00, "AK", ShippingType.STANDARD);
         assertEquals(60.00, cost);
     }
 
     @Test
     @DisplayName("Testing Free Shipping")
     void testFreeShippingAbove50() {
-        double cost = TotalCostCalculator.calculate(50.01, "IL", ShippingType.STANDARD);
+        double cost = TotalCostCalculator.calculate(50.01, "AK", ShippingType.STANDARD);
         assertEquals(50.01, cost);
     }
 
     @Test
     @DisplayName("Testing Invalid Price")
     void testInvalidPriceBoundary() {
-        assertThrows(IllegalArgumentException.class, () -> TotalCostCalculator.calculate(-0.01, "IL", ShippingType.STANDARD));
+        assertThrows(IllegalArgumentException.class, () -> TotalCostCalculator.calculate(-0.01, "AK", ShippingType.STANDARD));
     }
 
     @Test
     @DisplayName("Testing Valid Price")
     void testValidPriceBoundary() {
-        double cost = TotalCostCalculator.calculate(0.01, "IL", ShippingType.STANDARD);
+        double cost = TotalCostCalculator.calculate(0.01, "AK", ShippingType.STANDARD);
         assertEquals(10.01, cost);
     }
 }
